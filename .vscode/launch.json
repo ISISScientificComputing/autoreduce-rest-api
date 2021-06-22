@@ -5,26 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Queue Processor Docker Attach",
+            "name": "Run Autoreduce REST API",
             "type": "python",
-            "request": "attach",
-            "connect": {
-                "host": "127.0.0.1",
-                "port": 5678
+            "request": "launch",
+            "program": "${workspaceFolder}/autoreduce_rest_api/manage.py",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
             },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/autoreduce"
-                }
+            "args": [
+                "runserver"
             ],
-            "presentation": {
-                "hidden": false,
-                "group": "autoreduce-qp-docker",
-                "order": 1
-            },
-            "preLaunchTask": "(don't use directly) Exec queue listener",
-            "postDebugTask": "Kill queue-processor-debugpy",
+            "console": "integratedTerminal",
+            "django": true,
+            "justMyCode": false
         },
         {
             "name": "Pytest",
@@ -72,50 +65,6 @@
             "justMyCode": false
         },
         {
-            "name": "Pytest system tests",
-            "type": "python",
-            "request": "launch",
-            "module": "pytest",
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "-v",
-                "autoreduce_qp/systemtests"
-            ],
-            "django": true,
-            "presentation": {
-                "hidden": false,
-                "group": "autoreduce-native",
-            },
-            "env": {
-                "DISPLAY": ":1",
-                "RUNNING_VIA_PYTEST": "true",
-                "SELENIUM_REMOTE": "1"
-            },
-            "justMyCode": false
-        },
-        {
-            "name": "Pytest all",
-            "type": "python",
-            "request": "launch",
-            "module": "pytest",
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "-v",
-                "autoreduce_qp"
-            ],
-            "django": true,
-            "presentation": {
-                "hidden": false,
-                "group": "autoreduce-native",
-            },
-            "env": {
-                "DISPLAY": ":1",
-                "RUNNING_VIA_PYTEST": "true",
-                "SELENIUM_REMOTE": "1"
-            },
-            "justMyCode": false
-        },
-        {
             "name": "Pytest - coverage",
             "type": "python",
             "request": "launch",
@@ -136,33 +85,6 @@
                 "RUNNING_VIA_PYTEST": "true",
                 "SELENIUM_REMOTE": "1"
             }
-        },
-        {
-            "name": "Queue Listener",
-            "type": "python",
-            "request": "launch",
-            "program": "queue_processors/queue_processor/queue_listener.py",
-            "console": "integratedTerminal",
-            "presentation": {
-                "hidden": false,
-                "group": "autoreduce-native",
-                "order": 98
-            }
-        },
-        {
-            "name": "Attach",
-            "type": "python",
-            "request": "attach",
-            "connect": {
-                "host": "127.0.0.1",
-                "port": 5678
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/autoreduce"
-                }
-            ]
         },
     ]
 }
