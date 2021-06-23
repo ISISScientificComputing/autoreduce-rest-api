@@ -4,10 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 
-from autoreduce_scripts.manual_operations.manual_submission import main
+from autoreduce_scripts.manual_operations.manual_submission import main as submit_main
+from autoreduce_scripts.manual_operations.manual_remove import main as remove_main
 
 
-class SubmitRuns(APIView):
+class ManageRuns(APIView):
     """
     View to list all users in the system.
 
@@ -17,11 +18,18 @@ class SubmitRuns(APIView):
 
     authentication_classes = [authentication.TokenAuthentication]
 
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, instrument: str, start: int, end: Optional[int] = None):
         """
         Submits the runs via manual submission on a POST request.
         """
-        submitted_runs = main(instrument, start, end)
+        submitted_runs = submit_main(instrument, start, end)
         return JsonResponse({"submitted_runs": submitted_runs})
+
+    def delete(self, request, instrument: str, start: int, end: Optional[int] = None):
+        """
+        Delete the runs via manual remove on a DELETE request.
+        """
+        removed_runs = remove_main(instrument, start, end, delete_all_versions=True, no_input=True)
+        return JsonResponse({"removed_runs": removed_runs})
