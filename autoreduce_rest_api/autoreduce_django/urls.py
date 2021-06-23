@@ -18,5 +18,4 @@ from django.urls.conf import include
 
 urlpatterns = [
     path('api/', include('runs.urls')),
-    path('api/', include('generate_token.urls')),
 ]

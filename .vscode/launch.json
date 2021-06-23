@@ -13,7 +13,8 @@
                 "PYTHONPATH": "${workspaceFolder}"
             },
             "args": [
-                "runserver"
+                "runserver",
+                "8001"
             ],
             "console": "integratedTerminal",
             "django": true,
