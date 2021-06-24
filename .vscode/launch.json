@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Autoreduce REST API",
+            "name": "Run REST API",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/autoreduce_rest_api/manage.py",
