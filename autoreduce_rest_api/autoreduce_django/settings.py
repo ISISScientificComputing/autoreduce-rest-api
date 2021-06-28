@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages',
-    'autoreduce_qp.autoreduce_django', 'autoreduce_db.reduction_viewer', 'autoreduce_db.instrument', 'rest_framework',
-    'rest_framework.authtoken', 'autoreduce_rest_api.runs'
+    'autoreduce_db.reduction_viewer', 'autoreduce_db.instrument', 'rest_framework', 'rest_framework.authtoken',
+    'autoreduce_rest_api.runs'
 ]
 
 DATABASES = autoreduce_db_settings
