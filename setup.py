@@ -13,7 +13,7 @@ setup(name="autoreduce_rest_api",
       author="ISIS Autoreduction Team",
       url="https://github.com/ISISScientificComputing/autoreduce/",
       install_requires=[
-          "autoreduce_db==22.0.0.dev3", "autoreduce_utils==22.0.0.dev2", "django==3.2.4", "djangorestframework==3.12.4"
+          "autoreduce_db==22.0.0.dev3", "autoreduce_utils==22.0.0.dev3", "django==3.2.4", "djangorestframework==3.12.4"
       ],
       packages=find_packages(),
       entry_points={"console_scripts": ["autoreduce-qp-start = autoreduce_qp.queue_processor.queue_listener:main"]},
