@@ -61,7 +61,7 @@ class SubmitRunsTest(LiveServerTestCase):
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
         login_icat.assert_called_once()
         login_icat.reset_mock()
-        assert get_location_and_rb_from_icat.call_count == 5
+        assert get_location_and_rb_from_icat.call_count == 6
         get_location_and_rb_from_icat.reset_mock()
 
         response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
