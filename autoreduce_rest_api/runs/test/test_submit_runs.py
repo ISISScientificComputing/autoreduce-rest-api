@@ -10,6 +10,9 @@ from autoreduce_qp.queue_processor.queue_listener import setup_connection
 
 
 def wait_until(somepredicate, timeout=30, period=0.25, *args, **kwargs):
+    """
+    Wait until the condition is True, or it times out
+    """
     mustend = time.time() + timeout
     while time.time() < mustend:
         if somepredicate(*args, **kwargs):
@@ -36,6 +39,9 @@ class SubmitRunsTest(LiveServerTestCase):
         return super().setUp()
 
     def test_submit_and_delete_run_range(self):
+        """
+        Submit and delete a run range via the API
+        """
         response = requests.post(f"{self.live_server_url}/api/runs/INTER/63125/63130",
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
