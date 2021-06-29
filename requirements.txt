@@ -13,4 +13,4 @@ selenium==3.141.0
 vulture==2.3
 yapf==0.31.0
 
-autoreduce_qp
+autoreduce_qp>=22.0.0.dev2
