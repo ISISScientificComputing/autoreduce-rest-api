@@ -1,26 +1,26 @@
-from autoreduce_utils.clients.connection_exception import ConnectionException
-import requests
 import os
 import time
+from unittest.mock import Mock, patch
+
+import requests
+from autoreduce_db.reduction_viewer.models import ReductionRun
+from autoreduce_qp.queue_processor.queue_listener import setup_connection
+from autoreduce_utils.clients.connection_exception import ConnectionException
+from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 from django.contrib.auth import get_user_model
 from django.test import LiveServerTestCase
 from rest_framework.authtoken.models import Token
-from unittest.mock import Mock, patch
-
-from autoreduce_db.reduction_viewer.models import ReductionRun
-from autoreduce_qp.queue_processor.queue_listener import setup_connection
-from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
-def wait_until(somepredicate, timeout=30, period=0.25, *args, **kwargs):
+def wait_until(predicate, timeout=30, period=0.25):
     """
     Wait until the condition is True, or it times out
     """
     mustend = time.time() + timeout
     while time.time() < mustend:
-        if somepredicate(*args, **kwargs):
+        if predicate():
             return True
         time.sleep(period)
     return False
