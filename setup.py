@@ -13,7 +13,7 @@ setup(name="autoreduce_rest_api",
       author="ISIS Autoreduction Team",
       url="https://github.com/ISISScientificComputing/autoreduce/",
       install_requires=[
-          "autoreduce_utils>=22.0.0.dev3", "autoreduce_scripts==22.0.0.dev11", "django==3.2.4",
+          "autoreduce_utils==22.0.0.dev3", "autoreduce_scripts==22.0.0.dev11", "django==3.2.4",
           "djangorestframework==3.12.4"
       ],
       packages=find_packages(),
