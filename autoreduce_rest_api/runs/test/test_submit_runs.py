@@ -6,7 +6,7 @@ import requests
 from autoreduce_db.reduction_viewer.models import ReductionRun
 from autoreduce_qp.queue_processor.queue_listener import setup_connection
 from autoreduce_utils.clients.connection_exception import ConnectionException
-from autoreduce_utils.settings import SCRIPTS_DIRECTORY
+from autoreduce_utils.settings import *
 from django.contrib.auth import get_user_model
 from django.test import LiveServerTestCase
 from rest_framework.authtoken.models import Token
