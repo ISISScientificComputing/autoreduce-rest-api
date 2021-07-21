@@ -8,12 +8,13 @@ for more details
 from setuptools import setup, find_packages
 
 setup(name="autoreduce_rest_api",
-      version="22.0.0.dev1",
+      version="22.0.0.dev0",
       description="ISIS Autoreduction Runs REST API",
       author="ISIS Autoreduction Team",
       url="https://github.com/ISISScientificComputing/autoreduce/",
       install_requires=[
-          "autoreduce_db==22.0.0.dev3", "autoreduce_utils==22.0.0.dev2", "django==3.2.4", "djangorestframework==3.12.4"
+          "autoreduce_utils==22.0.0.dev3", "autoreduce_scripts==22.0.0.dev11", "django==3.2.4",
+          "djangorestframework==3.12.4"
       ],
       packages=find_packages(),
       entry_points={"console_scripts": ["autoreduce-qp-start = autoreduce_qp.queue_processor.queue_listener:main"]},
