@@ -17,7 +17,7 @@ setup(name="autoreduce_rest_api",
           "djangorestframework==3.12.4"
       ],
       packages=find_packages(),
-      entry_points={"console_scripts": ["autoreduce-qp-start = autoreduce_qp.queue_processor.queue_listener:main"]},
+      entry_points={"console_scripts": ["autoreduce-rest-api-manage = autoreduce_rest_api.manage:main"]},
       classifiers=[
           "Programming Language :: Python :: 3 :: Only",
       ])
