@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'autoreduce_django.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'autoreduce_rest_api.autoreduce_django.settings')
     try:
         # pylint:disable=import-outside-toplevel
         from django.core.management import execute_from_command_line
