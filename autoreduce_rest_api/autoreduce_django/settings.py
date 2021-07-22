@@ -47,9 +47,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'autoreduce_django.urls'
+ROOT_URLCONF = 'autoreduce_rest_api.autoreduce_django.urls'
 
-WSGI_APPLICATION = 'autoreduce_django.wsgi.application'
+WSGI_APPLICATION = 'autoreduce_rest_api.autoreduce_django.wsgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

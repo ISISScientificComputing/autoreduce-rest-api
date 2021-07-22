@@ -17,5 +17,5 @@ from django.urls import path
 from django.urls.conf import include
 
 urlpatterns = [
-    path('api/', include('runs.urls')),
+    path('api/', include('autoreduce_rest_api.runs.urls')),
 ]
