@@ -1,0 +1,24 @@
+###########################################################################################################################
+#
+# This containerises the Web App server
+#
+# Useful environment variables:
+# - AUTOREDUCTION_PRODUCTION - used by Autoreduce to decide whether to use settings for production
+#
+# Expected mounts/volumes/binds:
+# - /autoreduce - this should be the root of the autoreduce repository, e.g. --bind ./autoreduce:/autoreduce/
+# - /instrument - this should be the folder of the CEPH mount, e.g. --bind /instrument:/instrument
+# - /isis - this should be the ISIS archive mount point, e.g. --bind /isis:/isis
+# - /archive - alternative mount for the ISIS archive, because Mantid might look in it, e.g. --bind /isis:/archive
+# - /staticfiles - the folder where the staticfiles will be collected, e.g. --bind /staticfiles/:/staticfiles
+#                  for development the default dir is --bind ./autoreduce/WebApp/autoreduce_webapp/staticfiles:/staticfiles
+#
+###########################################################################################################################
+
+Bootstrap: docker-daemon
+From: autoreduction/rest-api:latest
+Includecmd: no
+
+%startscript
+    cd /autoreduce-rest-api/autoreduce_django
+    gunicorn --workers 2 -b 0.0.0.0:8000 autoreduce_rest_api.autoreduce_django.wsgi
