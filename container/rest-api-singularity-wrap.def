@@ -20,5 +20,4 @@ From: autoreduction/rest-api:latest
 Includecmd: no
 
 %startscript
-    cd /autoreduce-rest-api/autoreduce_django
     gunicorn --workers 2 -b 0.0.0.0:8000 autoreduce_rest_api.autoreduce_django.wsgi

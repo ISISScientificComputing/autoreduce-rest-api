@@ -8,7 +8,7 @@ for more details
 from setuptools import setup, find_packages
 
 setup(name="autoreduce_rest_api",
-      version="22.0.0.dev6",
+      version="22.0.0.dev7",
       description="ISIS Autoreduction Runs REST API",
       author="ISIS Autoreduction Team",
       url="https://github.com/ISISScientificComputing/autoreduce/",
