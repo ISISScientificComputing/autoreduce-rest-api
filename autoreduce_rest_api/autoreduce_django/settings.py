@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-sm6+=6-6b=r+h4vwi23gs+n(u=o4aji74u^v6$48ed#+$fjn!f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reducedev2.isis.cclrc.ac.uk']
+else:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reduce.isis.cclrc.ac.uk']
 
 # Application definition
 
