@@ -6,12 +6,8 @@
 # - AUTOREDUCTION_PRODUCTION - used by Autoreduce to decide whether to use settings for production
 #
 # Expected mounts/volumes/binds:
-# - /autoreduce - this should be the root of the autoreduce repository, e.g. --bind ./autoreduce:/autoreduce/
-# - /instrument - this should be the folder of the CEPH mount, e.g. --bind /instrument:/instrument
 # - /isis - this should be the ISIS archive mount point, e.g. --bind /isis:/isis
 # - /archive - alternative mount for the ISIS archive, because Mantid might look in it, e.g. --bind /isis:/archive
-# - /staticfiles - the folder where the staticfiles will be collected, e.g. --bind /staticfiles/:/staticfiles
-#                  for development the default dir is --bind ./autoreduce/WebApp/autoreduce_webapp/staticfiles:/staticfiles
 #
 ###########################################################################################################################
 
