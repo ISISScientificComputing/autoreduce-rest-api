@@ -12,7 +12,7 @@ setup(name="autoreduce_rest_api",
       description="ISIS Autoreduction Runs REST API",
       author="ISIS Autoreduction Team",
       url="https://github.com/ISISScientificComputing/autoreduce/",
-      install_requires=["autoreduce_scripts==22.0.0.dev12", "django==3.2.4", "djangorestframework==3.12.4"],
+      install_requires=["autoreduce_scripts==22.0.0.dev12", "django==3.2.6", "djangorestframework==3.12.4"],
       packages=find_packages(),
       entry_points={"console_scripts": ["autoreduce-rest-api-manage = autoreduce_rest_api.manage:main"]},
       classifiers=[
