@@ -48,10 +48,9 @@ class SubmitRunsTest(LiveServerTestCase):
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
 
-    @patch('autoreduce_scripts.manual_operations.manual_submission.login_icat')
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
            return_value=["/tmp/location", "RB1234567"])
-    def test_submit_and_delete_run_range(self, get_location_and_rb_from_icat: Mock, login_icat: Mock):
+    def test_submit_and_delete_run_range(self, get_location_and_rb_from_icat: Mock):
         """
         Submit and delete a run range via the API
         """
@@ -59,8 +58,6 @@ class SubmitRunsTest(LiveServerTestCase):
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
-        login_icat.assert_called_once()
-        login_icat.reset_mock()
         assert get_location_and_rb_from_icat.call_count == 6
         get_location_and_rb_from_icat.reset_mock()
 
@@ -68,5 +65,4 @@ class SubmitRunsTest(LiveServerTestCase):
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
-        login_icat.assert_not_called()
         get_location_and_rb_from_icat.assert_not_called()
