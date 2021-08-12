@@ -1,0 +1,3 @@
+# Test Env. Requirements
+
+autoreduce_qp>=22.0.0.dev8
