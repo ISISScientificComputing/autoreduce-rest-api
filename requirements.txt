@@ -1,4 +1,4 @@
 # Test Env. Requirements
 
 axe-selenium-python==2.1.6
-autoreduce_qp>=22.0.0.dev2
+autoreduce_qp>=22.0.0.dev8
