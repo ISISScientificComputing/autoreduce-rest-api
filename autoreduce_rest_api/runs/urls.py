@@ -7,4 +7,5 @@ app_name = "runs"
 urlpatterns = [
     path('runs/<str:instrument>/<int:start>', views.ManageRuns.as_view(), name="manage"),
     path('runs/<str:instrument>/<int:start>/<int:end>', views.ManageRuns.as_view(), name="manage"),
+    path('runs/batch/<str:instrument>', views.BatchSubmit.as_view(), name="batch"),
 ]
