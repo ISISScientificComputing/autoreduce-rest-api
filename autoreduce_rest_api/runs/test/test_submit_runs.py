@@ -35,7 +35,7 @@ class SubmitRunsTest(LiveServerTestCase):
             cls.queue_client, cls.listener = setup_connection()
         except ConnectionException as err:
             raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
-                               "ActiveMQ is running and started by `python setup.py start`") from err
+                               "ActiveMQ Docker container is running and started") from err
 
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
         with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), 'w') as file:
@@ -75,13 +75,24 @@ class SubmitRunsTest(LiveServerTestCase):
         """
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
                                  headers={"Authorization": f"Token {self.token}"},
-                                 json={"runs": [63125, 63130]})
+                                 json={
+                                     "runs": [63125, 63130],
+                                     "reduction_arguments": {
+                                         "apple": "banana"
+                                     },
+                                     "user_id": 99199,
+                                     "description": "Test description"
+                                 })
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 1)
         assert get_location_and_rb_from_icat.call_count == 2
         get_location_and_rb_from_icat.reset_mock()
 
-        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+        reduced_run = ReductionRun.objects.first()
+        assert reduced_run.started_by == 99199
+        assert reduced_run.run_description == "Test description"
+
+        response = requests.delete(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}/{reduced_run.pk}",
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)

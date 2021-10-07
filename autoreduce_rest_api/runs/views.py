@@ -59,9 +59,11 @@ class BatchSubmit(APIView):
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
 
-    def delete(self, request, instrument: str, pk: int):
+    # pylint:disable=invalid-name
+    def delete(self, _, instrument: str, pk: int):
         """Deletes the batch reduction"""
         try:
-            return JsonResponse({"removed_runs": remove_main(instrument, pk, delete_all_versions=True, no_input=True)})
+            return JsonResponse(
+                {"removed_runs": remove_main(instrument, pk, delete_all_versions=True, no_input=True, batch=True)})
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
