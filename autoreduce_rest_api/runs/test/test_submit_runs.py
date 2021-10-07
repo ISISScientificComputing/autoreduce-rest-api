@@ -66,3 +66,23 @@ class SubmitRunsTest(LiveServerTestCase):
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
         get_location_and_rb_from_icat.assert_not_called()
+
+    @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
+           return_value=["/tmp/location", "RB1234567"])
+    def test_batch_submit_and_delete_run(self, get_location_and_rb_from_icat: Mock):
+        """
+        Submit and delete a run range via the API
+        """
+        response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
+                                 headers={"Authorization": f"Token {self.token}"},
+                                 json={"runs": [63125, 63130]})
+        assert response.status_code == 200
+        assert wait_until(lambda: ReductionRun.objects.count() == 1)
+        assert get_location_and_rb_from_icat.call_count == 2
+        get_location_and_rb_from_icat.reset_mock()
+
+        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+                                   headers={"Authorization": f"Token {self.token}"})
+        assert response.status_code == 200
+        assert wait_until(lambda: ReductionRun.objects.count() == 0)
+        get_location_and_rb_from_icat.assert_not_called()

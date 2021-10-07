@@ -58,3 +58,10 @@ class BatchSubmit(APIView):
             })
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
+
+    def delete(self, request, instrument: str, pk: int):
+        """Deletes the batch reduction"""
+        try:
+            return JsonResponse({"removed_runs": remove_main(instrument, pk, delete_all_versions=True, no_input=True)})
+        except RuntimeError as err:
+            return JsonResponse({"message": str(err)}, status=400)
