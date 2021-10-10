@@ -67,6 +67,29 @@ class SubmitRunsTest(LiveServerTestCase):
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
         get_location_and_rb_from_icat.assert_not_called()
 
+
+class SubmitBatchRunsTest(LiveServerTestCase):
+    fixtures = ["autoreduce_rest_api/autoreduce_django/fixtures/super_user_fixture.json"]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        try:
+            cls.queue_client, cls.listener = setup_connection()
+        except ConnectionException as err:
+            raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
+                               "ActiveMQ Docker container is running and started") from err
+
+        os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
+        with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), 'w') as file:
+            file.write("")
+
+        return super().setUpClass()
+
+    def setUp(self) -> None:
+        user = get_user_model()
+        self.token = Token.objects.create(user=user.objects.first())
+        return super().setUp()
+
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
            return_value=["/tmp/location", "RB1234567"])
     def test_batch_submit_and_delete_run(self, get_location_and_rb_from_icat: Mock):

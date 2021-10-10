@@ -27,12 +27,23 @@ class ManageRuns(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, _, instrument: str, start: int, end: Optional[int] = None):
+    def post(self, request, instrument: str):
         """
         Submits the runs via manual submission on a POST request.
         """
-        submitted_runs = submit_main(instrument, start, end)
-        return JsonResponse({"submitted_runs": submitted_runs})
+        if "runs" not in request.data:
+            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
+        reduction_arguments, user_id, description = get_common_args_from_request(request)
+        try:
+            submitted_runs = submit_main(instrument,
+                                         request.data["runs"],
+                                         reduction_script=None,
+                                         reduction_arguments=reduction_arguments,
+                                         user_id=user_id,
+                                         description=description)
+            return JsonResponse({"submitted_runs": submitted_runs})
+        except RuntimeError as err:
+            return JsonResponse({"message": str(err)}, status=400)
 
     def delete(self, _, instrument: str, start: int, end: Optional[int] = None):
         """
