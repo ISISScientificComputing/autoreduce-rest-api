@@ -54,14 +54,20 @@ class SubmitRunsTest(LiveServerTestCase):
         """
         Submit and delete a run range via the API
         """
-        response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+        response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
+                                 json={
+                                     "runs": list(range(63125, 63131)),
+                                 },
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
         assert get_location_and_rb_from_icat.call_count == 6
         get_location_and_rb_from_icat.reset_mock()
 
-        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
+                                   json={
+                                       "runs": list(range(63125, 63131)),
+                                   },
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
@@ -115,7 +121,8 @@ class SubmitBatchRunsTest(LiveServerTestCase):
         assert reduced_run.started_by == 99199
         assert reduced_run.run_description == "Test description"
 
-        response = requests.delete(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}/{reduced_run.pk}",
+        response = requests.delete(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
+                                   json={"runs": [reduced_run.pk]},
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)

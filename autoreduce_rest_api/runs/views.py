@@ -30,6 +30,15 @@ class ManageRuns(APIView):
     def post(self, request, instrument: str):
         """
         Submits the runs via manual submission on a POST request.
+
+        POST data args:
+            runs: List of int run numbers to submit
+            reduction_arguments: Dictionary of arguments that will be sent in the Message
+            user_id: User ID of the user who submitted the runs
+            description: Description of the run
+
+        Returns:
+            submitted_runs: List of run numbers that were submitted
         """
         if "runs" not in request.data:
             return JsonResponse({"error": "No 'runs' key specified"}, status=400)
@@ -45,11 +54,19 @@ class ManageRuns(APIView):
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
 
-    def delete(self, _, instrument: str, start: int, end: Optional[int] = None):
+    def delete(self, request, instrument: str):
         """
         Delete the runs via manual remove on a DELETE request.
+
+        DELETE data args:
+            runs: List of int run numbers to submit
+
+        Returns:
+            removed_runs: List of run numbers that were deleted
         """
-        removed_runs = remove_main(instrument, start, end, delete_all_versions=True, no_input=True)
+        if "runs" not in request.data:
+            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
+        removed_runs = remove_main(instrument, request.data["runs"], delete_all_versions=True, no_input=True)
         return JsonResponse({"removed_runs": removed_runs})
 
 
@@ -58,23 +75,51 @@ class BatchSubmit(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, instrument: str):
-        """Submits the runs as a batch reduction"""
+        """
+        Submits the runs as a batch reduction
+
+        POST data args:
+            runs: List of int run numbers to submit
+            reduction_arguments: Dictionary of arguments that will be sent in the Message
+            user_id: User ID of the user who submitted the runs
+            description: Description of the run
+
+        Returns:
+            submitted_runs: List of run numbers that were submitted
+        """
         if "runs" not in request.data:
             return JsonResponse({"error": "No 'runs' key specified"}, status=400)
         reduction_arguments, user_id, description = get_common_args_from_request(request)
         try:
             return JsonResponse({
                 "submitted_runs":
-                submit_batch_main(instrument, request.data["runs"], reduction_arguments, user_id, description)
+                submit_batch_main(instrument,
+                                  request.data["runs"],
+                                  reduction_script=None,
+                                  reduction_arguments=reduction_arguments,
+                                  user_id=user_id,
+                                  description=description)
             })
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
 
     # pylint:disable=invalid-name
-    def delete(self, _, instrument: str, pk: int):
-        """Deletes the batch reduction"""
+    def delete(self, request, instrument: str):
+        """
+        Deletes the batch reduction
+
+        DELETE data args:
+            runs: List of int run numbers to submit
+
+        Returns:
+            removed_runs: List of run numbers that were deleted
+        """
+        if "runs" not in request.data:
+            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
         try:
-            return JsonResponse(
-                {"removed_runs": remove_main(instrument, pk, delete_all_versions=True, no_input=True, batch=True)})
+            return JsonResponse({
+                "removed_runs":
+                remove_main(instrument, request.data["runs"], delete_all_versions=True, no_input=True, batch=True)
+            })
         except RuntimeError as err:
             return JsonResponse({"message": str(err)}, status=400)
