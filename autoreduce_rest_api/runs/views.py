@@ -1,4 +1,3 @@
-from typing import Optional
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
