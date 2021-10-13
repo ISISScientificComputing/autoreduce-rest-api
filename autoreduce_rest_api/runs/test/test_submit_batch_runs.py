@@ -1,5 +1,4 @@
 import os
-import time
 from unittest.mock import Mock, patch
 
 import requests
@@ -11,22 +10,12 @@ from django.contrib.auth import get_user_model
 from django.test import LiveServerTestCase
 from rest_framework.authtoken.models import Token
 
+from autoreduce_rest_api.runs.test.test_submit_runs import wait_until
+
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
-def wait_until(predicate, timeout=30, period=0.25):
-    """
-    Wait until the condition is True, or it times out
-    """
-    mustend = time.time() + timeout
-    while time.time() < mustend:
-        if predicate():
-            return True
-        time.sleep(period)
-    return False
-
-
-class SubmitRunsTest(LiveServerTestCase):
+class SubmitBatchRunsTest(LiveServerTestCase):
     fixtures = ["autoreduce_rest_api/autoreduce_django/fixtures/super_user_fixture.json"]
 
     @classmethod
@@ -50,24 +39,31 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
            return_value=["/tmp/location", "RB1234567"])
-    def test_submit_and_delete_run_range(self, get_location_and_rb_from_icat: Mock):
+    def test_batch_submit_and_delete_run(self, get_location_and_rb_from_icat: Mock):
         """
         Submit and delete a run range via the API
         """
-        response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
+        response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
+                                 headers={"Authorization": f"Token {self.token}"},
                                  json={
-                                     "runs": list(range(63125, 63131)),
-                                 },
-                                 headers={"Authorization": f"Token {self.token}"})
+                                     "runs": [63125, 63130],
+                                     "reduction_arguments": {
+                                         "apple": "banana"
+                                     },
+                                     "user_id": 99199,
+                                     "description": "Test description"
+                                 })
         assert response.status_code == 200
-        assert wait_until(lambda: ReductionRun.objects.count() == 6)
-        assert get_location_and_rb_from_icat.call_count == 6
+        assert wait_until(lambda: ReductionRun.objects.count() == 1)
+        assert get_location_and_rb_from_icat.call_count == 2
         get_location_and_rb_from_icat.reset_mock()
 
-        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
-                                   json={
-                                       "runs": list(range(63125, 63131)),
-                                   },
+        reduced_run = ReductionRun.objects.first()
+        assert reduced_run.started_by == 99199
+        assert reduced_run.run_description == "Test description"
+
+        response = requests.delete(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
+                                   json={"runs": [reduced_run.pk]},
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
