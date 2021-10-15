@@ -44,7 +44,7 @@ class SubmitRunsTest(LiveServerTestCase):
             cls.queue_client, cls.listener = setup_connection()
         except ConnectionException as err:
             raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
-                               "ActiveMQ is running and started by `python setup.py start`") from err
+                               "ActiveMQ Docker container is running and started") from err
 
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
         with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), 'w') as file:
@@ -61,7 +61,10 @@ class SubmitRunsTest(LiveServerTestCase):
            return_value=["/tmp/location", "RB1234567"])
     def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock):
         """Submit and delete a run range via the API."""
-        response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+        response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
+                                 json={
+                                     "runs": list(range(63125, 63131)),
+                                 },
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
