@@ -1,15 +1,23 @@
+# ############################################################################### #
+# Autoreduction Repository : https://github.com/ISISScientificComputing/autoreduce
+#
+# Copyright &copy; 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+# ############################################################################### #
+"""Test cases for submitting batch runs."""
+# pylint:disable=no-member
 import os
 from unittest.mock import Mock, patch
 
+from django.contrib.auth import get_user_model
+from django.test import LiveServerTestCase
 import requests
+from rest_framework.authtoken.models import Token
+
 from autoreduce_db.reduction_viewer.models import ReductionRun
 from autoreduce_qp.queue_processor.queue_listener import setup_connection
 from autoreduce_utils.clients.connection_exception import ConnectionException
 from autoreduce_utils.settings import SCRIPTS_DIRECTORY
-from django.contrib.auth import get_user_model
-from django.test import LiveServerTestCase
-from rest_framework.authtoken.models import Token
-
 from autoreduce_rest_api.runs.test.test_submit_runs import wait_until
 
 INSTRUMENT_NAME = "TESTINSTRUMENT"
@@ -37,12 +45,10 @@ class SubmitBatchRunsTest(LiveServerTestCase):
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
 
-    @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
+    @patch("autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat",
            return_value=["/tmp/location", "RB1234567"])
-    def test_batch_submit_and_delete_run(self, get_location_and_rb_from_icat: Mock):
-        """
-        Submit and delete a run range via the API
-        """
+    def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock):
+        """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
                                  headers={"Authorization": f"Token {self.token}"},
                                  json={
@@ -55,8 +61,8 @@ class SubmitBatchRunsTest(LiveServerTestCase):
                                  })
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 1)
-        assert get_location_and_rb_from_icat.call_count == 2
-        get_location_and_rb_from_icat.reset_mock()
+        assert get_run_data_from_icat.call_count == 2
+        get_run_data_from_icat.reset_mock()
 
         reduced_run = ReductionRun.objects.first()
         assert reduced_run.started_by == 99199
@@ -67,4 +73,4 @@ class SubmitBatchRunsTest(LiveServerTestCase):
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
-        get_location_and_rb_from_icat.assert_not_called()
+        get_run_data_from_icat.assert_not_called()
