@@ -28,11 +28,6 @@ class SubmitBatchRunsTest(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        try:
-            cls.queue_client, cls.listener = setup_connection()
-        except ConnectionException as err:
-            raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
-                               "ActiveMQ Docker container is running and started") from err
 
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
         with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), 'w') as file:
@@ -41,6 +36,11 @@ class SubmitBatchRunsTest(LiveServerTestCase):
         return super().setUpClass()
 
     def setUp(self) -> None:
+        try:
+            self.queue_client, self.listener = setup_connection()
+        except ConnectionException as err:
+            raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
+                               "ActiveMQ Docker container is running and started") from err
         user = get_user_model()
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
