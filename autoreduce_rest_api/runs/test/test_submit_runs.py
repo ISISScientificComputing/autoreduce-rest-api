@@ -58,7 +58,7 @@ class SubmitRunsTest(LiveServerTestCase):
         return super().setUp()
 
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
-           return_value=["/tmp/location", "RB1234567"])
+           return_value=["/tmp/location", "RB1234567", "test_title"])
     def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock):
         """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
