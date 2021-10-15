@@ -37,9 +37,9 @@ class SubmitBatchRunsTest(LiveServerTestCase):
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
 
-    @patch('autoreduce_scripts.manual_operations.manual_submission.get_location_and_rb_from_icat',
+    @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
            return_value=["/tmp/location", "RB1234567"])
-    def test_batch_submit_and_delete_run(self, get_location_and_rb_from_icat: Mock):
+    def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock):
         """
         Submit and delete a run range via the API
         """
@@ -55,8 +55,8 @@ class SubmitBatchRunsTest(LiveServerTestCase):
                                  })
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 1)
-        assert get_location_and_rb_from_icat.call_count == 2
-        get_location_and_rb_from_icat.reset_mock()
+        assert get_run_data_from_icat.call_count == 2
+        get_run_data_from_icat.reset_mock()
 
         reduced_run = ReductionRun.objects.first()
         assert reduced_run.started_by == 99199
@@ -67,4 +67,4 @@ class SubmitBatchRunsTest(LiveServerTestCase):
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
-        get_location_and_rb_from_icat.assert_not_called()
+        get_run_data_from_icat.assert_not_called()
