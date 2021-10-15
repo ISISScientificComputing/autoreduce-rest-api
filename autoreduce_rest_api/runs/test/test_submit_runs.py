@@ -70,7 +70,10 @@ class SubmitRunsTest(LiveServerTestCase):
         assert get_run_data_from_icat.call_count == 6
         get_run_data_from_icat.reset_mock()
 
-        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}/63125/63130",
+        response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
+                                   json={
+                                       "runs": list(range(63125, 63131)),
+                                   },
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
