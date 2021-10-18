@@ -40,19 +40,8 @@ INSTALLED_APPS = [
     'autoreduce_rest_api.runs'
 ]
 
-if os.environ.get("TESTING_MYSQL_DB", None) is not None:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': "autoreduce",
-            'USER': "root",
-            'PASSWORD': "password",
-            'HOST': "127.0.0.1",
-            'PORT': "3306",
-        }
-    }
-else:
-    DATABASES = autoreduce_db_settings
+DATABASES = autoreduce_db_settings
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
