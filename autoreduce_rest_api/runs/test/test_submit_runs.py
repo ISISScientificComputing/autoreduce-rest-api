@@ -80,6 +80,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                  },
                                  headers={"Authorization": f"Token {self.token}"})
         logging.info(DATABASES)
+        logging.info(os.environ)
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
         assert get_run_data_from_database.call_count == 6
