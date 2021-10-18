@@ -29,6 +29,7 @@ jobs:
       - uses: ISISScientificComputing/autoreduce-actions/build@master
         with:
           package_name: autoreduce_rest_api
+          migrate_db: false
 
       - name: Run unit tests
         run: RUNNING_VIA_PYTEST=true TESTING_MYSQL_DB=true pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
