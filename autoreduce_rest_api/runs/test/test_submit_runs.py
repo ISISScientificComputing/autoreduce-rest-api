@@ -24,7 +24,6 @@ from autoreduce_rest_api.autoreduce_django.settings import DATABASES
 
 import logging
 
-logging.info(DATABASES)
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
@@ -80,6 +79,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                      "runs": list(range(63125, 63131)),
                                  },
                                  headers={"Authorization": f"Token {self.token}"})
+        logging.info(DATABASES)
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
         assert get_run_data_from_database.call_count == 6
