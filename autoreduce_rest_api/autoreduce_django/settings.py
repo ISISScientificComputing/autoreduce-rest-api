@@ -40,8 +40,17 @@ INSTALLED_APPS = [
     'autoreduce_rest_api.runs'
 ]
 
-DATABASES = autoreduce_db_settings
-
+# DATABASES = autoreduce_db_settings
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "autoreduce",
+        'USER': "root",
+        'PASSWORD': "password",
+        'HOST': "127.0.0.1",
+        'PORT': "3306",
+    }
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
