@@ -24,7 +24,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Run MySQL Docker
-        run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -e -d --network=host mysql:latest
+        run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -d --network=host mysql:latest
 
       - uses: ISISScientificComputing/autoreduce-actions/build@master
         with:
