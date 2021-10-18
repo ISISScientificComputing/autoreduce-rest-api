@@ -23,8 +23,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # - name: Run MySQL Docker
-      #   run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -d --network=host mysql:latest
+      - name: Run MySQL Docker
+        run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -d --network=host mysql:latest
 
       - uses: ISISScientificComputing/autoreduce-actions/build@master
         with:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Run unit tests
         run: >-
-          RUNNING_VIA_PYTEST=true TESTING_MYSQL_DB=true pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
+          export RUNNING_VIA_PYTEST=true; export TESTING_MYSQL_DB=true; pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
 
       - uses: codecov/codecov-action@v1
         with:
