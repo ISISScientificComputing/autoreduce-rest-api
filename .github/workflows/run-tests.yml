@@ -27,9 +27,12 @@ jobs:
         with:
           package_name: autoreduce_rest_api
 
+      - name: Run MySQL Docker
+        run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -e -d --network=host mysql:latest
+
       - name: Run unit tests
         run: >-
-          pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
+          TESTING_MYSQL_DB=true pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
 
       - uses: codecov/codecov-action@v1
         with:
