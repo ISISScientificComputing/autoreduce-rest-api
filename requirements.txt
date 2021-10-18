@@ -1,3 +1,5 @@
 # Test Env. Requirements
 
-autoreduce_qp>=22.0.0.dev8
+autoreduce_qp>=22.0.0.dev12
+mysqlclient==2.0.1
+parameterized==0.8.1
