@@ -31,8 +31,7 @@ jobs:
           package_name: autoreduce_rest_api
 
       - name: Run unit tests
-        run: >-
-          export RUNNING_VIA_PYTEST=true; export TESTING_MYSQL_DB=true; pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
+        run: RUNNING_VIA_PYTEST=true TESTING_MYSQL_DB=true pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
 
       - uses: codecov/codecov-action@v1
         with:
