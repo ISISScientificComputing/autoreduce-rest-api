@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'autoreduce_rest_api.runs'
 ]
 
-if "TESTING_MYSQL_DB" in os.environ:
+if os.environ.get("TESTING_MYSQL_DB", None) is not None:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
