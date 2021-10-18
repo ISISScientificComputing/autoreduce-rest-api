@@ -6,9 +6,12 @@
 # ############################################################################### #
 """Test cases for submitting runs."""
 # pylint:disable=no-member
+import json
 import os
 import time
+from typing import Callable
 from unittest.mock import Mock, patch
+from parameterized import parameterized
 
 from django.contrib.auth import get_user_model
 from django.test import LiveServerTestCase
@@ -20,7 +23,7 @@ from autoreduce_qp.queue_processor.queue_listener import setup_connection
 from autoreduce_utils.clients.connection_exception import ConnectionException
 from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 
-from autoreduce_rest_api.autoreduce_django.settings import DATABASES
+from autoreduce_rest_api.runs.views import NO_RUNS_KEY_MESSAGE
 
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
@@ -59,11 +62,42 @@ class SubmitRunsTest(LiveServerTestCase):
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
 
-    @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_database',
-           return_value=[None, None, None])
+    @parameterized.expand([[requests.post, "/api/runs/"], [requests.post, "/api/runs/batch/"],
+                           [requests.delete, "/api/runs/"], [requests.delete, "/api/runs/batch/"]])
+    def test_no_runs_key_in_json_returns_json_msg_error(self, requests_callable: Callable, url: str):
+        """
+        Test that not specifying any "runs" will return a response with 400 and an error message.
+        """
+        response = requests_callable(f"{self.live_server_url}{url}{INSTRUMENT_NAME}",
+                                     json={},
+                                     headers={"Authorization": f"Token {self.token}"})
+        assert response.status_code == 400
+        assert json.loads(response.content)["error"] == NO_RUNS_KEY_MESSAGE
+
+    @parameterized.expand([
+        ['autoreduce_rest_api.runs.views.submit_main', requests.post, "/api/runs/"],
+        ['autoreduce_rest_api.runs.views.submit_batch_main', requests.post, "/api/runs/batch/"],
+        ['autoreduce_rest_api.runs.views.remove_main', requests.delete, "/api/runs/"],
+        ['autoreduce_rest_api.runs.views.remove_main', requests.delete, "/api/runs/batch/"],
+    ])
+    def test_raising_returns_json_error(self, mock_path: str, requests_callable: Callable, url: str):
+        """
+        Parameterized test that checks that the correct error message
+        is returned from each of the views available.
+        """
+        with patch(mock_path, side_effect=RuntimeError("Test error")) as mock_main:
+            response = requests_callable(f"{self.live_server_url}{url}{INSTRUMENT_NAME}",
+                                         json={
+                                             "runs": list(range(63125, 63131)),
+                                         },
+                                         headers={"Authorization": f"Token {self.token}"})
+            assert response.status_code == 400
+            assert json.loads(response.content)["error"] == "Test error"
+            mock_main.assert_called_once()
+
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
            return_value=["/tmp/location", "RB1234567", "test_title"])
-    def test_submit_and_delete_run_range(self, get_run_data_from_database: Mock, get_run_data_from_icat: Mock):
+    def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock):
         """Submit and delete a run range via the API.
 
         Args:
@@ -79,9 +113,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
-        assert get_run_data_from_database.call_count == 6
         assert get_run_data_from_icat.call_count == 6
-        get_run_data_from_database.reset_mock()
         get_run_data_from_icat.reset_mock()
 
         response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
@@ -91,14 +123,11 @@ class SubmitRunsTest(LiveServerTestCase):
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
-        get_run_data_from_database.assert_not_called()
         get_run_data_from_icat.assert_not_called()
 
-    @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_database',
-           return_value=[None, None, None])
     @patch("autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat",
            return_value=["/tmp/location", "RB1234567", "test_title"])
-    def test_batch_submit_and_delete_run(self, get_run_data_from_database: Mock, get_run_data_from_icat: Mock):
+    def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock):
         """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
                                  headers={"Authorization": f"Token {self.token}"},
@@ -112,10 +141,8 @@ class SubmitRunsTest(LiveServerTestCase):
                                  })
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 1)
-        assert get_run_data_from_database.call_count == 2
         assert get_run_data_from_icat.call_count == 2
         get_run_data_from_icat.reset_mock()
-        get_run_data_from_database.reset_mock()
 
         reduced_run = ReductionRun.objects.first()
         assert reduced_run.started_by == 99199
@@ -126,5 +153,4 @@ class SubmitRunsTest(LiveServerTestCase):
                                    headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
-        get_run_data_from_database.assert_not_called()
         get_run_data_from_icat.assert_not_called()

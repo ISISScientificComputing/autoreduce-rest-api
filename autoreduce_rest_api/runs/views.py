@@ -13,8 +13,18 @@ def get_common_args_from_request(request):
                                                                           -1), request.data.get("description", ""))
 
 
+NO_RUNS_KEY_MESSAGE = "No 'runs' key specified"
+
 # pylint:disable=no-self-use
-class ManageRuns(APIView):
+
+
+class CommonAPIView(APIView):
+    def error(self, message):
+        """Common function to return a JsonResponse with an error key"""
+        return JsonResponse({"error": message}, status=400)
+
+
+class ManageRuns(CommonAPIView):
     """
     View to list all users in the system.
 
@@ -40,7 +50,7 @@ class ManageRuns(APIView):
             submitted_runs: List of run numbers that were submitted
         """
         if "runs" not in request.data:
-            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
+            return self.error(NO_RUNS_KEY_MESSAGE)
         reduction_arguments, user_id, description = get_common_args_from_request(request)
         try:
             submitted_runs = submit_main(instrument,
@@ -51,7 +61,7 @@ class ManageRuns(APIView):
                                          description=description)
             return JsonResponse({"submitted_runs": submitted_runs})
         except RuntimeError as err:
-            return JsonResponse({"message": str(err)}, status=400)
+            return self.error(str(err))
 
     def delete(self, request, instrument: str):
         """
@@ -64,12 +74,15 @@ class ManageRuns(APIView):
             removed_runs: List of run numbers that were deleted
         """
         if "runs" not in request.data:
-            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
-        removed_runs = remove_main(instrument, request.data["runs"], delete_all_versions=True, no_input=True)
-        return JsonResponse({"removed_runs": removed_runs})
+            return self.error(NO_RUNS_KEY_MESSAGE)
+        try:
+            removed_runs = remove_main(instrument, request.data["runs"], delete_all_versions=True, no_input=True)
+            return JsonResponse({"removed_runs": removed_runs})
+        except RuntimeError as err:
+            return self.error(str(err))
 
 
-class BatchSubmit(APIView):
+class BatchSubmit(CommonAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
@@ -87,7 +100,7 @@ class BatchSubmit(APIView):
             submitted_runs: List of run numbers that were submitted
         """
         if "runs" not in request.data:
-            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
+            return self.error(NO_RUNS_KEY_MESSAGE)
         reduction_arguments, user_id, description = get_common_args_from_request(request)
         try:
             return JsonResponse({
@@ -100,7 +113,7 @@ class BatchSubmit(APIView):
                                   description=description)
             })
         except RuntimeError as err:
-            return JsonResponse({"message": str(err)}, status=400)
+            return self.error(str(err))
 
     # pylint:disable=invalid-name
     def delete(self, request, instrument: str):
@@ -114,11 +127,11 @@ class BatchSubmit(APIView):
             removed_runs: List of run numbers that were deleted
         """
         if "runs" not in request.data:
-            return JsonResponse({"error": "No 'runs' key specified"}, status=400)
+            return self.error(NO_RUNS_KEY_MESSAGE)
         try:
             return JsonResponse({
                 "removed_runs":
                 remove_main(instrument, request.data["runs"], delete_all_versions=True, no_input=True, batch=True)
             })
         except RuntimeError as err:
-            return JsonResponse({"message": str(err)}, status=400)
+            return self.error(str(err))
