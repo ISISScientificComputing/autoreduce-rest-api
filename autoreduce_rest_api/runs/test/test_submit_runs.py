@@ -20,6 +20,11 @@ from autoreduce_qp.queue_processor.queue_listener import setup_connection
 from autoreduce_utils.clients.connection_exception import ConnectionException
 from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 
+from autoreduce_rest_api.autoreduce_django.settings import DATABASES
+
+import logging
+
+logging.info(DATABASES)
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
