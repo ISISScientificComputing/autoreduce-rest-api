@@ -44,7 +44,11 @@ if os.environ.get("TESTING_MYSQL_DB", None) is not None:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': "autoreduce",
+            # the default name "test_autoreduce" matches the default database name created
+            # by the autoreduce-frontend integration tests. This should not be changed unless
+            # pytest's implementation of the naming changes, but if it does, it can be passed through
+            # the environment variable as the rest_api is started!
+            'NAME': os.environ.get("TESTING_MYSQL_DB_NAME", "test_autoreduce"),
             'USER': "root",
             'PASSWORD': "password",
             'HOST': "127.0.0.1",
