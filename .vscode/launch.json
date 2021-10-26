@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/autoreduce_rest_api/manage.py",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "TESTING_MYSQL_DB": "true"
+                "TESTING_MYSQL_DB": "true",
             },
             "args": [
                 "runserver",
