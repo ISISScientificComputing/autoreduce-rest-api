@@ -11,7 +11,6 @@
             "program": "${workspaceFolder}/autoreduce_rest_api/manage.py",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "TESTING_MYSQL_DB": "true",
             },
             "args": [
                 "runserver",
@@ -24,6 +23,28 @@
                 "hidden": false,
                 "group": "autoreduce-run",
                 "order": 3
+            }
+        },
+        {
+            "name": "Run REST API integration",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/autoreduce_rest_api/manage.py",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "TESTING_MYSQL_DB": "true",
+            },
+            "args": [
+                "runserver",
+                "8001"
+            ],
+            "console": "integratedTerminal",
+            "django": true,
+            "justMyCode": false,
+            "presentation": {
+                "hidden": false,
+                "group": "integration tests",
+                "order": 1
             }
         },
     ]
