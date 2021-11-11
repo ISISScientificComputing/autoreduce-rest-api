@@ -1,24 +1,15 @@
 ---
 
-- name: Ensures ~/previous_logs dir exists
-  file:
-    path: /home/{{ autoreduction_user }}/previous_logs/
-    state: directory
-    owner: "{{ autoreduction_user }}"
-    group: "{{ autoreduction_user }}"
+- name: Set run_command depending on deployment stage
+  include_vars: "{{ deployment_stage }}.yml"
 
-- name: Clear previous Singularity instance logs
-  command: mv --backup=numbered /home/{{ autoreduction_user }}/.singularity/instances/logs /home/{{ autoreduction_user }}/previous_logs
-  ignore_errors: yes
-
-- name: Start the Singularity instance
+- name: Pull the docker container to get any updates
   become: yes
-  become_user: "{{ autoreduction_user }}"
-  command: >
-    singularity instance start
-    --env AUTOREDUCTION_PRODUCTION=true
-    --bind /isis:/isis
-    --bind /isis:/archive
-    rest-api.sif rest-api
-  args:
-    chdir: /home/{{ autoreduction_user }}/
+  command: docker pull ghcr.io/isisscientificcomputing/autoreduce-rest-api:latest
+
+- name: Start the detached Docker container
+  become: yes
+  command: docker run {{ run_command }} ghcr.io/isisscientificcomputing/autoreduce-rest-api:latest
+
+
+
