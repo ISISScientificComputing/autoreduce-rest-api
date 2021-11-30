@@ -1,4 +1,16 @@
 ---
+- name: Ensure group "docker" exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Adding user {{ autoreduction_user }} to `docker` group to allow sudoless docker usage
+  user: name={{ autoreduction_user }}
+        group={{ autoreduction_user }}
+        shell=/bin/bash
+        password=${password}
+        groups=docker
+        append=yes
 
 - name: Set run_command depending on deployment stage
   include_vars: "{{ deployment_stage }}.yml"
@@ -10,6 +22,3 @@
 - name: Start the detached Docker container
   become: yes
   command: docker run {{ run_command }} ghcr.io/isisscientificcomputing/autoreduce-rest-api:latest
-
-
-
