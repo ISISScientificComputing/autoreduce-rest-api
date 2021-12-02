@@ -19,7 +19,7 @@ jobs:
       - name: Run MySQL Docker
         run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -d --network=host mysql:latest
 
-      - uses: ISISScientificComputing/autoreduce-actions/build@main
+      - uses: autoreduction/autoreduce-actions/build@main
         with:
           package_name: autoreduce_rest_api
           migrate_db: false
@@ -89,11 +89,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - uses: ISISScientificComputing/autoreduce-actions/build@main
+      - uses: autoreduction/autoreduce-actions/build@main
         with:
           package_name: autoreduce_rest_api
 
-      - uses: ISISScientificComputing/autoreduce-actions/code_inspection@main
+      - uses: autoreduction/autoreduce-actions/code_inspection@main
         with:
           package_name: autoreduce_rest_api
 

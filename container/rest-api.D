@@ -1,4 +1,4 @@
-FROM ghcr.io/isisscientificcomputing/base
+FROM ghcr.io/autoreduction/base
 
 ADD ./setup.py /autoreduce-rest-api/setup.py
 
