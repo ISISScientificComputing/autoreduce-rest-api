@@ -31,7 +31,7 @@ jobs:
         with:
           files: ./coverage.xml
           name: codecov-umbrella
-          flags: backend
+          flags: rest-api
           fail_ci_if_error: true
           verbose: true
 
