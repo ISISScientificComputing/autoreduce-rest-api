@@ -134,7 +134,9 @@ class SubmitRunsTest(LiveServerTestCase):
                                  json={
                                      "runs": [63125, 63130],
                                      "reduction_arguments": {
-                                         "apple": "banana"
+                                         "standard_vars": {
+                                             "apple": "banana"
+                                         }
                                      },
                                      "user_id": 99199,
                                      "description": "Test description"
