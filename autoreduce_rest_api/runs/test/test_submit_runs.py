@@ -95,15 +95,13 @@ class SubmitRunsTest(LiveServerTestCase):
             assert json.loads(response.content)["error"] == "Test error"
             mock_main.assert_called_once()
 
+    @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
-           return_value=["/tmp/location", "RB1234567", "test_title"])
-    def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock):
+           return_value=["/tmp/location", "RB1234567"])
+    def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API.
 
         Args:
-            get_run_data_from_database: Mocks the function to call the db, as this can overload
-                                        SQLite3 in testing with too much parallelism
-                                        (queue processor writing, api reading), which just throws up an error
             get_run_data_from_icat: Mocks the function to call ICAT, to avoid unnecessary calls to their service
         """
         response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
@@ -114,6 +112,7 @@ class SubmitRunsTest(LiveServerTestCase):
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 6)
         assert get_run_data_from_icat.call_count == 6
+        assert read_from_datafile.call_count == 6
         get_run_data_from_icat.reset_mock()
 
         response = requests.delete(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
@@ -125,9 +124,10 @@ class SubmitRunsTest(LiveServerTestCase):
         assert wait_until(lambda: ReductionRun.objects.count() == 0)
         get_run_data_from_icat.assert_not_called()
 
+    @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch("autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat",
-           return_value=["/tmp/location", "RB1234567", "test_title"])
-    def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock):
+           return_value=["/tmp/location", "RB1234567"])
+    def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
                                  headers={"Authorization": f"Token {self.token}"},
@@ -144,6 +144,7 @@ class SubmitRunsTest(LiveServerTestCase):
         assert response.status_code == 200
         assert wait_until(lambda: ReductionRun.objects.count() == 1)
         assert get_run_data_from_icat.call_count == 2
+        assert read_from_datafile.call_count == 2
         get_run_data_from_icat.reset_mock()
 
         reduced_run = ReductionRun.objects.first()
