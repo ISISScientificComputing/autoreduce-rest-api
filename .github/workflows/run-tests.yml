@@ -4,17 +4,19 @@ on: [ push ]
 jobs:
   pytest:
     name: Pytest
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        python-version: ['3.6', '3.8']
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
 
       - name: Run MySQL Docker
         run: docker run --rm --name mysql-ar -e MYSQL_ROOT_PASSWORD=password -d --network=host mysql:latest
@@ -47,13 +49,19 @@ jobs:
 
   dependency-check:
     name: Dependency-Check
-    runs-on: ubuntu-18.04
-    container: centos/python-36-centos7
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        python-version: ['3.6', '3.8']
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/cache@v2
         with:
@@ -70,17 +78,19 @@ jobs:
 
   Inspection:
     name: Code Inspection
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        python-version: ['3.6', '3.8']
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/cache@v2
         with:

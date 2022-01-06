@@ -41,7 +41,10 @@ def wait_until(predicate, timeout=30, period=0.25):
 
 
 class SubmitRunsTest(LiveServerTestCase):
-    fixtures = ["autoreduce_rest_api/autoreduce_django/fixtures/super_user_fixture.json"]
+    fixtures = [
+        "autoreduce_rest_api/autoreduce_django/fixtures/super_user_fixture.json",
+        "autoreduce_rest_api/autoreduce_django/fixtures/status_fixture.json"
+    ]
 
     @classmethod
     def setUpClass(cls) -> None:
