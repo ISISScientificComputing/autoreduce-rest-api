@@ -19,6 +19,7 @@ NO_RUNS_KEY_MESSAGE = "No 'runs' key specified"
 
 
 class CommonAPIView(APIView):
+
     def error(self, message):
         """Common function to return a JsonResponse with an error key"""
         return JsonResponse({"error": message}, status=400)
