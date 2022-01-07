@@ -55,7 +55,8 @@ class SubmitRunsTest(LiveServerTestCase):
                                "ActiveMQ Docker container is running and started") from err
 
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
-        with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), 'w') as file:
+        with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), mode='w',
+                  encoding="utf-8") as file:
             file.write("")
 
         return super().setUpClass()
