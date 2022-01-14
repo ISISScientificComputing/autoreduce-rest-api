@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix-codeql-tests
   workflow_dispatch:
   schedule:
     - cron: '0 5 * * 1' # Runs at 05:00 UTC on Monday
@@ -12,6 +13,9 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
     services:
       mysql:
         image: mysql:5.7
@@ -45,7 +49,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - uses: ./.github/actions/build-autoreduction
+      - uses: autoreduction/autoreduce-actions/build@main
+        with:
+          package_name: autoreduce_rest_api
+          migrate_db: false
       
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
