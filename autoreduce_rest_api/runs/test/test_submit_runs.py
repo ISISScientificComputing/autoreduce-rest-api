@@ -111,6 +111,10 @@ class SubmitRunsTest(LiveServerTestCase):
         response = requests.post(f"{self.live_server_url}/api/runs/{INSTRUMENT_NAME}",
                                  json={
                                      "runs": list(range(63125, 63131)),
+                                     "software": {
+                                         "name": "Mantid",
+                                         "version": "6.2.0"
+                                     },
                                  },
                                  headers={"Authorization": f"Token {self.token}"})
         assert response.status_code == 200
@@ -137,6 +141,10 @@ class SubmitRunsTest(LiveServerTestCase):
                                  headers={"Authorization": f"Token {self.token}"},
                                  json={
                                      "runs": [63125, 63130],
+                                     "software": {
+                                         "name": "Mantid",
+                                         "version": "6.2.0"
+                                     },
                                      "reduction_arguments": {
                                          "standard_vars": {
                                              "apple": "banana"
