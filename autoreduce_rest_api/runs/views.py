@@ -10,7 +10,10 @@ from autoreduce_scripts.manual_operations.manual_remove import main as remove_ma
 def get_common_args_from_request(request):
     """Gets common arguments that are used in all POST views"""
     return (request.data.get("reduction_arguments", {}), request.data.get("user_id", -1),
-            request.data.get("description", ""), request.data.get("software", {}))
+            request.data.get("description", ""), request.data.get("software", {
+                "name": "Mantid",
+                "version": "6.2.0"
+            }))
 
 
 NO_RUNS_KEY_MESSAGE = "No 'runs' key specified"
