@@ -9,8 +9,11 @@ from autoreduce_scripts.manual_operations.manual_remove import main as remove_ma
 
 def get_common_args_from_request(request):
     """Gets common arguments that are used in all POST views"""
-    return (request.data.get("reduction_arguments", {}), request.data.get("user_id",
-                                                                          -1), request.data.get("description", ""))
+    return (request.data.get("reduction_arguments", {}), request.data.get("user_id", -1),
+            request.data.get("description", ""), request.data.get("software", {
+                "name": "Mantid",
+                "version": "6.2.0"
+            }))
 
 
 NO_RUNS_KEY_MESSAGE = "No 'runs' key specified"
@@ -52,10 +55,11 @@ class ManageRuns(CommonAPIView):
         """
         if "runs" not in request.data:
             return self.error(NO_RUNS_KEY_MESSAGE)
-        reduction_arguments, user_id, description = get_common_args_from_request(request)
+        reduction_arguments, user_id, description, software = get_common_args_from_request(request)
         try:
             submitted_runs = submit_main(instrument,
                                          request.data["runs"],
+                                         software=software,
                                          reduction_script=None,
                                          reduction_arguments=reduction_arguments,
                                          user_id=user_id,
@@ -102,12 +106,13 @@ class BatchSubmit(CommonAPIView):
         """
         if "runs" not in request.data:
             return self.error(NO_RUNS_KEY_MESSAGE)
-        reduction_arguments, user_id, description = get_common_args_from_request(request)
+        reduction_arguments, user_id, description, software = get_common_args_from_request(request)
         try:
             return JsonResponse({
                 "submitted_runs":
                 submit_batch_main(instrument,
                                   request.data["runs"],
+                                  software=software,
                                   reduction_script=None,
                                   reduction_arguments=reduction_arguments,
                                   user_id=user_id,
