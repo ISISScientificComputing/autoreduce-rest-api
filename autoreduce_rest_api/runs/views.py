@@ -56,6 +56,7 @@ class ManageRuns(CommonAPIView):
         if "runs" not in request.data:
             return self.error(NO_RUNS_KEY_MESSAGE)
         reduction_arguments, user_id, description, software = get_common_args_from_request(request)
+        use_stored_reduction_script = request.data.get("use_existing_script", False)
         try:
             submitted_runs = submit_main(instrument,
                                          request.data["runs"],
@@ -63,7 +64,8 @@ class ManageRuns(CommonAPIView):
                                          reduction_script=None,
                                          reduction_arguments=reduction_arguments,
                                          user_id=user_id,
-                                         description=description)
+                                         description=description,
+                                         use_stored_reduction_script=use_stored_reduction_script)
             return JsonResponse({"submitted_runs": submitted_runs})
         except RuntimeError as err:
             return self.error(str(err))
