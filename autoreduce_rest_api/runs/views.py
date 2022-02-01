@@ -56,7 +56,7 @@ class ManageRuns(CommonAPIView):
         if "runs" not in request.data:
             return self.error(NO_RUNS_KEY_MESSAGE)
         reduction_arguments, user_id, description, software = get_common_args_from_request(request)
-        if request.data.get("reduction_script") != None:
+        if request.data.get('reduction_script') is not None:
             reduction_script = request.data.get("reduction_script")
         else:
             reduction_script = None
