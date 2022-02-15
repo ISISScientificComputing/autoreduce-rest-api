@@ -66,6 +66,9 @@ class SubmitRunsTest(LiveServerTestCase):
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
 
+    def tearDown(self) -> None:
+        self.consumer.stop()
+
     @parameterized.expand([[requests.post, "/api/runs/"], [requests.post, "/api/runs/batch/"],
                            [requests.delete, "/api/runs/"], [requests.delete, "/api/runs/batch/"]])
     def test_no_runs_key_in_json_returns_json_msg_error(self, requests_callable: Callable, url: str):
@@ -101,7 +104,7 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
-           return_value=["/tmp/location", "RB1234567"])
+           return_value=["/tmp/location", 1234567])
     def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API.
 
@@ -134,7 +137,7 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch("autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat",
-           return_value=["/tmp/location", "RB1234567"])
+           return_value=["/tmp/location", 1234567])
     def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
