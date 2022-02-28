@@ -48,12 +48,6 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        try:
-            cls.publisher, cls.consumer = setup_kafka_connections()
-        except ConnectionException as err:
-            raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
-                               "Kafka Docker container is running and started") from err
-
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
         with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), mode='w',
                   encoding="utf-8") as file:
@@ -62,6 +56,12 @@ class SubmitRunsTest(LiveServerTestCase):
         return super().setUpClass()
 
     def setUp(self) -> None:
+        try:
+            self.publisher, self.consumer = setup_kafka_connections()
+        except ConnectionException as err:
+            raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
+                               "Kafka Docker container is running and started") from err
+
         user = get_user_model()
         self.token = Token.objects.create(user=user.objects.first())
         return super().setUp()
