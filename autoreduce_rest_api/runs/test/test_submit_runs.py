@@ -28,7 +28,7 @@ from autoreduce_rest_api.runs.views import NO_RUNS_KEY_MESSAGE
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
-def wait_until(predicate, timeout=30, period=0.25):
+def wait_until(predicate, timeout=60, period=10):
     """Wait until the condition is True, or it times out."""
     must_end = time.time() + timeout
     while time.time() < must_end:
