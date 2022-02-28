@@ -19,7 +19,7 @@ import requests
 from rest_framework.authtoken.models import Token
 
 from autoreduce_db.reduction_viewer.models import ReductionRun
-from autoreduce_qp.queue_processor.confluent_consumer import setup_connection
+from autoreduce_qp.queue_processor.confluent_consumer import setup_kafka_connections
 from autoreduce_utils.clients.connection_exception import ConnectionException
 from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 
@@ -49,7 +49,7 @@ class SubmitRunsTest(LiveServerTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         try:
-            cls.consumer = setup_connection()
+            cls.producer, cls.consumer = setup_kafka_connections()
         except ConnectionException as err:
             raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
                                "Kafka Docker container is running and started") from err
@@ -59,6 +59,10 @@ class SubmitRunsTest(LiveServerTestCase):
             file.write("")
 
         return super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.consumer.stop()
 
     def setUp(self) -> None:
         user = get_user_model()
@@ -100,7 +104,7 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch('autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat',
-           return_value=["/tmp/location", 1234567])
+           return_value=["/tmp/location", "RB1234567"])
     def test_submit_and_delete_run_range(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API.
 
@@ -133,7 +137,7 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @patch("autoreduce_scripts.manual_operations.manual_submission.read_from_datafile", return_value="test title")
     @patch("autoreduce_scripts.manual_operations.manual_submission.get_run_data_from_icat",
-           return_value=["/tmp/location", 1234567])
+           return_value=["/tmp/location", "RB1234567"])
     def test_batch_submit_and_delete_run(self, get_run_data_from_icat: Mock, read_from_datafile: Mock):
         """Submit and delete a run range via the API."""
         response = requests.post(f"{self.live_server_url}/api/runs/batch/{INSTRUMENT_NAME}",
