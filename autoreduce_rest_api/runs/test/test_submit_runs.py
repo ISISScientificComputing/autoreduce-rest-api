@@ -19,7 +19,7 @@ import requests
 from rest_framework.authtoken.models import Token
 
 from autoreduce_db.reduction_viewer.models import ReductionRun
-from autoreduce_qp.queue_processor.queue_listener import setup_connection
+from autoreduce_qp.queue_processor.confluent_consumer import setup_kafka_connections
 from autoreduce_utils.clients.connection_exception import ConnectionException
 from autoreduce_utils.settings import SCRIPTS_DIRECTORY
 
@@ -28,7 +28,7 @@ from autoreduce_rest_api.runs.views import NO_RUNS_KEY_MESSAGE
 INSTRUMENT_NAME = "TESTINSTRUMENT"
 
 
-def wait_until(predicate, timeout=30, period=0.25):
+def wait_until(predicate, timeout=60, period=10):
     """Wait until the condition is True, or it times out."""
     must_end = time.time() + timeout
     while time.time() < must_end:
@@ -48,18 +48,22 @@ class SubmitRunsTest(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        try:
-            cls.queue_client, cls.listener = setup_connection()
-        except ConnectionException as err:
-            raise RuntimeError("Could not connect to ActiveMQ - check your credentials. If running locally check that "
-                               "ActiveMQ Docker container is running and started") from err
-
         os.makedirs(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, exist_ok=True)
         with open(os.path.join(SCRIPTS_DIRECTORY % INSTRUMENT_NAME, "reduce_vars.py"), mode='w',
                   encoding="utf-8") as file:
             file.write("")
 
+        try:
+            cls.producer, cls.consumer = setup_kafka_connections()
+        except ConnectionException as err:
+            raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
+                               "Kafka Docker container is running and started") from err
+
         return super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.consumer.stop()
 
     def setUp(self) -> None:
         user = get_user_model()
