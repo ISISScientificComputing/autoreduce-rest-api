@@ -53,19 +53,21 @@ class SubmitRunsTest(LiveServerTestCase):
                   encoding="utf-8") as file:
             file.write("")
 
+        try:
+            cls.producer, cls.consumer = setup_kafka_connections()
+        except ConnectionException as err:
+            raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
+                               "Kafka Docker container is running and started") from err
+
         return super().setUpClass()
 
-    def tearDown(self) -> None:
-        self.consumer.stop()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.consumer.stop()
 
     def setUp(self) -> None:
         user = get_user_model()
         self.token = Token.objects.create(user=user.objects.first())
-        try:
-            self.producer, self.consumer = setup_kafka_connections()
-        except ConnectionException as err:
-            raise RuntimeError("Could not connect to Kafka - check your credentials. If running locally check that "
-                               "Kafka Docker container is running and started") from err
         return super().setUp()
 
     @parameterized.expand([[requests.post, "/api/runs/"], [requests.post, "/api/runs/batch/"],
