@@ -27,10 +27,13 @@ SECRET_KEY = 'django-insecure-sm6+=6-6b=r+h4vwi23gs+n(u=o4aji74u^v6$48ed#+$fjn!f
 DEBUG = not "AUTOREDUCTION_PRODUCTION" in os.environ
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
+debug_hosts = "127.0.0.1 localhost reducedev2.isis.cclrc.ac.uk"
+prod_hosts = "127.0.0.1 localhost 0.0.0.0 reduce.isis.cclrc.ac.uk"
+
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reducedev2.isis.cclrc.ac.uk']
+    ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', debug_hosts).split()
 else:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reduce.isis.cclrc.ac.uk']
+    ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', prod_hosts).split()
 
 # Application definition
 
