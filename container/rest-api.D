@@ -1,5 +1,7 @@
 FROM ghcr.io/autoreduction/base
 
+RUN python3 -m pip install --user --no-cache-dir gunicorn
+
 # Installs rest-api from your local repository
 ADD . .
 RUN python3 -m pip install --user --no-cache-dir .
