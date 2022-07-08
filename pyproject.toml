@@ -15,7 +15,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-testing = ["autoreduce_qp", "mysqlclient==2.1.0", "parameterized==0.8.1"]
+testing = [
+    "autoreduce_qp>=22.0.0.dev37",
+    "mysqlclient==2.1.0",
+    "parameterized==0.8.1",
+]
 
 [project.urls]
 "Repository" = "https://github.com/autoreduction/rest-api"
