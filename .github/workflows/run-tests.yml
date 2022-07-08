@@ -108,6 +108,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - name: Pip install
+        run: |
+          pip install --upgrade pip
+          pip install -e .[testing]
+
       - uses: autoreduction/autoreduce-actions/build@main
         with:
           package_name: autoreduce_rest_api
