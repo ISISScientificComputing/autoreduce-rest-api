@@ -24,6 +24,9 @@ testing = ["autoreduce_qp", "mysqlclient==2.1.0", "parameterized==0.8.1"]
 [project.scripts]
 autoreduce-rest-api-manage = "autoreduce_rest_api.manage:main"
 
+[tool.setuptools]
+py-modules = []
+
 [tool.yapf]
 column_limit = 120
 based_on_style = "pep8"
