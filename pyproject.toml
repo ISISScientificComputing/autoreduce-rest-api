@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-testing = [
+dev = [
     "autoreduce_qp>=22.0.0.dev37",
     "mysqlclient==2.1.0",
     "parameterized==0.8.1",

@@ -29,7 +29,7 @@ jobs:
       - name: Pip install
         run: |
           pip install --upgrade pip
-          pip install -e .[testing]
+          pip install -e .[dev]
 
       - uses: autoreduction/autoreduce-actions/build@main
         with:
@@ -83,7 +83,7 @@ jobs:
       - name: Pip install
         run: |
           pip install --upgrade pip
-          pip install -e .[testing]
+          pip install -e .[dev]
 
   Inspection:
     name: Code Inspection
@@ -111,7 +111,7 @@ jobs:
       - name: Pip install
         run: |
           pip install --upgrade pip
-          pip install -e .[testing]
+          pip install -e .[dev]
 
       - uses: autoreduction/autoreduce-actions/build@main
         with:
