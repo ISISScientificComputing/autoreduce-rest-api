@@ -43,7 +43,8 @@ def wait_until(predicate, timeout=60, period=10):
 class SubmitRunsTest(LiveServerTestCase):
     fixtures = [
         "autoreduce_rest_api/autoreduce_django/fixtures/super_user_fixture.json",
-        "autoreduce_rest_api/autoreduce_django/fixtures/status_fixture.json"
+        "autoreduce_rest_api/autoreduce_django/fixtures/status_fixture.json",
+        "autoreduce_rest_api/autoreduce_django/fixtures/software_fixture.json",
     ]
 
     @classmethod
@@ -117,7 +118,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                      "runs": list(range(63125, 63131)),
                                      "software": {
                                          "name": "Mantid",
-                                         "version": "6.2.0"
+                                         "version": "6.4.0"
                                      },
                                  },
                                  headers={"Authorization": f"Token {self.token}"})
@@ -147,7 +148,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                      "runs": [63125, 63130],
                                      "software": {
                                          "name": "Mantid",
-                                         "version": "6.2.0"
+                                         "version": "6.4.0"
                                      },
                                      "reduction_arguments": {
                                          "standard_vars": {

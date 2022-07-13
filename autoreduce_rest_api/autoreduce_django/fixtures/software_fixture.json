@@ -1,0 +1,10 @@
+[
+    {
+        "model": "reduction_viewer.software",
+        "pk": 1,
+        "fields": {
+            "name": "Mantid",
+            "version": "6.4.0"
+        }
+    }
+]
