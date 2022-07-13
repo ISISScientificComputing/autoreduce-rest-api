@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "autoreduce_rest_api"
 version = "22.0.0.dev22"
-description = "ISIS Autoreduction Runs REST APIr"
+description = "ISIS Autoreduction Runs REST API"
+readme = "README.md"
 license = { text = "GNU General Public License" }
 classifiers = ["Framework :: Django", "Programming Language :: Python :: 3"]
 dependencies = [
