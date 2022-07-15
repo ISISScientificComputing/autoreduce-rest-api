@@ -21,8 +21,6 @@ def get_common_args_from_request(request):
 
 NO_RUNS_KEY_MESSAGE = "No 'runs' key specified"
 
-# pylint:disable=no-self-use
-
 
 class CommonAPIView(APIView):
 
