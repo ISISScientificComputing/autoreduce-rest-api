@@ -5,7 +5,6 @@ from rest_framework import authentication, permissions
 from autoreduce_scripts.manual_operations.manual_submission import main as submit_main
 from autoreduce_scripts.manual_operations.manual_batch_submit import main as submit_batch_main
 from autoreduce_scripts.manual_operations.manual_remove import main as remove_main
-from autoreduce_db.reduction_viewer.models import Software
 
 
 def get_common_args_from_request(request):
