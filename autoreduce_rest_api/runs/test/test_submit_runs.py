@@ -118,7 +118,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                      "runs": list(range(63125, 63131)),
                                      "software": {
                                          "name": "Mantid",
-                                         "version": "6.4.0"
+                                         "version": "latest"
                                      },
                                  },
                                  headers={"Authorization": f"Token {self.token}"})
@@ -148,7 +148,7 @@ class SubmitRunsTest(LiveServerTestCase):
                                      "runs": [63125, 63130],
                                      "software": {
                                          "name": "Mantid",
-                                         "version": "6.4.0"
+                                         "version": "latest"
                                      },
                                      "reduction_arguments": {
                                          "standard_vars": {
