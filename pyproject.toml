@@ -30,7 +30,7 @@ dev = [
 autoreduce-rest-api-manage = "autoreduce_rest_api.manage:main"
 
 [tool.setuptools]
-py-modules = []
+packages = ["autoreduce_rest_api"]
 
 [tool.yapf]
 column_limit = 120
