@@ -4,4 +4,4 @@ FROM ghcr.io/autoreduction/base
 ADD . .
 RUN python3 -m pip install --user --no-cache-dir .
 
-CMD ["autoreduce-rest-api-manage", "serve", "--port", "8004"]
+CMD ["autoreduce-rest-api-manage", "serve", "--port", "8001", "--probe-port", "8005"]
