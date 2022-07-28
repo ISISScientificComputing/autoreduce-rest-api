@@ -40,7 +40,7 @@ else:
 INSTALLED_APPS = [
     'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages',
     'autoreduce_db.reduction_viewer', 'autoreduce_db.instrument', 'rest_framework', 'rest_framework.authtoken',
-    'autoreduce_rest_api.runs'
+    'autoreduce_rest_api.runs', 'hurricane',
 ]
 
 if os.environ.get("TESTING_MYSQL_DB", None) is not None:

@@ -13,6 +13,7 @@ dependencies = [
     "autoreduce_scripts==22.0.0.dev43",
     "Django",
     "djangorestframework==3.13.1",
+    "django-hurricane",
 ]
 
 [project.optional-dependencies]
