@@ -39,7 +39,7 @@ jobs:
       - name: Run unit tests
         run: RUNNING_VIA_PYTEST=true TESTING_MYSQL_DB=true pytest --cov=autoreduce_rest_api --cov-report=xml autoreduce_rest_api
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
           name: codecov-umbrella
