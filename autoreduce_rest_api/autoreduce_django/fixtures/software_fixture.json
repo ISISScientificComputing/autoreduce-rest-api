@@ -4,7 +4,15 @@
         "pk": 1,
         "fields": {
             "name": "Mantid",
-            "version": "6.4.0"
+            "version": "latest"
+        }
+    },
+    {
+        "model": "reduction_viewer.software",
+        "pk": 2,
+        "fields": {
+            "name": "Mantid",
+            "version": "nightly"
         }
     }
 ]
