@@ -4,21 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autoreduce_rest_api"
-version = "22.0.0.dev22"
+version = "22.0.0.dev23"
 description = "ISIS Autoreduction Runs REST API"
 readme = "README.md"
 license = { text = "GNU General Public License" }
 classifiers = ["Framework :: Django", "Programming Language :: Python :: 3"]
 dependencies = [
-    "autoreduce_scripts==22.0.0.dev43",
-    "Django",
+    "autoreduce_scripts==22.0.0.dev44",
+    "Django==4.0.6",
     "djangorestframework==3.13.1",
     "django-hurricane",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "autoreduce_qp>=22.0.0.dev37",
+    "autoreduce_qp>=22.0.0.dev38",
     "mysqlclient==2.1.0",
     "parameterized==0.8.1",
 ]
