@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-sm6+=6-6b=r+h4vwi23gs+n(u=o4aji74u^v6$48ed#+$fjn!f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not "AUTOREDUCTION_PRODUCTION" in os.environ
+DEBUG = "AUTOREDUCTION_PRODUCTION" not in os.environ
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 DEBUG_HOSTS = "127.0.0.1 localhost reducedev2.isis.cclrc.ac.uk"
