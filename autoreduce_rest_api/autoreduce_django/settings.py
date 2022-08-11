@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'autoreduce_rest_api.runs',
     'hurricane',
+    'django_dbconn_retry',
 ]
 
 if os.environ.get("TESTING_MYSQL_DB", None) is not None:
