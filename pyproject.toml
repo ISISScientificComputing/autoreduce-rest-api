@@ -12,7 +12,7 @@ classifiers = ["Framework :: Django", "Programming Language :: Python :: 3"]
 dependencies = [
     "autoreduce_scripts==22.0.0.dev44",
     "Django==4.0.6",
-    "djangorestframework==3.13.1",
+    "djangorestframework==3.14.0",
     "django-hurricane",
 ]
 
